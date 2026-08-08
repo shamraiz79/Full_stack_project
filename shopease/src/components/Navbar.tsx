@@ -1,6 +1,7 @@
 type NavbarProps = {
   activeTab: "home" | "products" | "about" | "cart";
   onNavigate: (tab: "home" | "products" | "about" | "cart") => void;
+  onOpenLogin?: () => void;
 };
 
 const navItems: Array<{ label: string; value: "home" | "products" | "about" }> =
@@ -10,7 +11,7 @@ const navItems: Array<{ label: string; value: "home" | "products" | "about" }> =
     { label: "About", value: "about" },
   ];
 
-function Navbar({ activeTab, onNavigate }: NavbarProps) {
+function Navbar({ activeTab, onNavigate, onOpenLogin }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-black bg-white">
       <nav
@@ -78,6 +79,14 @@ function Navbar({ activeTab, onNavigate }: NavbarProps) {
               <circle cx="17" cy="18" r="1.4" />
               <path d="M3 4h2l2.5 10.5h9.7l2.1-7.7H7.2" />
             </svg>
+          </button>
+
+          <button
+            type="button"
+            onClick={onOpenLogin}
+            className="rounded-md border border-[#d7d4d1] bg-[#f7f6f4] px-3 py-1.5 text-sm font-medium text-[#4d4a5e] transition hover:border-[#6d60d8] hover:text-[#6d60d8]"
+          >
+            Login
           </button>
         </div>
       </nav>

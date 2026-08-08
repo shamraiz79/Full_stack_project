@@ -2,8 +2,10 @@ import { useState } from "react";
 import Navbar from "./components/Navbar";
 import type { Product } from "./components/ProductCard";
 import Cart, { type CartItem } from "./pages/Cart";
+import LoginPage from "./pages/Login";
 import ProductDetails from "./pages/ProductDetails";
 import Products from "./pages/Products";
+import RegisterPage from "./pages/Register";
 
 const featureList = [
   { title: "Free Shipping", subtitle: "On all orders over $50", icon: "truck" },
@@ -215,6 +217,7 @@ function App() {
     "home" | "products" | "about" | "cart"
   >("home");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [authView, setAuthView] = useState<"login" | "register" | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
@@ -244,6 +247,7 @@ function App() {
 
   const handleNavigate = (tab: "home" | "products" | "about" | "cart") => {
     setActiveTab(tab);
+    setAuthView(null);
     if (tab !== "products" && tab !== "cart") {
       setSelectedProduct(null);
     }
@@ -255,6 +259,7 @@ function App() {
   const handleProductSelect = (product: Product) => {
     setSelectedProduct(product);
     setActiveTab("products");
+    setAuthView(null);
   };
 
   const handleAddToCart = (product: Product) => {
@@ -280,6 +285,7 @@ function App() {
 
     setSelectedProduct(null);
     setActiveTab("cart");
+    setAuthView(null);
   };
 
   const handleQuantityChange = (productId: number, delta: number) => {
@@ -298,30 +304,58 @@ function App() {
     setCartItems((current) => current.filter((item) => item.id !== productId));
   };
 
-  return (
-    <>
-      <Navbar activeTab={activeTab} onNavigate={handleNavigate} />
-      {activeTab === "cart" ? (
+  const renderMainContent = () => {
+    if (authView === "login") {
+      return <LoginPage onSwitchToRegister={() => setAuthView("register")} />;
+    }
+
+    if (authView === "register") {
+      return <RegisterPage onSwitchToLogin={() => setAuthView("login")} />;
+    }
+
+    if (activeTab === "cart") {
+      return (
         <Cart
           items={cartItems}
           onQuantityChange={handleQuantityChange}
           onRemove={handleRemoveItem}
         />
-      ) : selectedProduct ? (
+      );
+    }
+
+    if (selectedProduct) {
+      return (
         <ProductDetails
           product={selectedProduct}
           onBack={() => setSelectedProduct(null)}
           onAddToCart={handleAddToCart}
         />
-      ) : activeTab === "home" ? (
-        <HomePage />
-      ) : activeTab === "products" ? (
-        <Products onSelectProduct={handleProductSelect} />
-      ) : (
-        <div className="flex min-h-[60vh] items-center justify-center bg-[#efeeeb] text-xl font-medium text-[#4d4a5e]">
-          About page coming soon
-        </div>
-      )}
+      );
+    }
+
+    if (activeTab === "home") {
+      return <HomePage />;
+    }
+
+    if (activeTab === "products") {
+      return <Products onSelectProduct={handleProductSelect} />;
+    }
+
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center bg-[#efeeeb] text-xl font-medium text-[#4d4a5e]">
+        About page coming soon
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <Navbar
+        activeTab={activeTab}
+        onNavigate={handleNavigate}
+        onOpenLogin={() => setAuthView("login")}
+      />
+      {renderMainContent()}
     </>
   );
 }
