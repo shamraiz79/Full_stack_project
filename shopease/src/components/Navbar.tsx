@@ -1,26 +1,47 @@
-const navItems = ["Home", "Products", "About"];
+type NavbarProps = {
+  activeTab: "home" | "products" | "about";
+  onNavigate: (tab: "home" | "products" | "about") => void;
+};
 
-function Navbar() {
+const navItems: Array<{ label: string; value: "home" | "products" | "about" }> =
+  [
+    { label: "Home", value: "home" },
+    { label: "Products", value: "products" },
+    { label: "About", value: "about" },
+  ];
+
+function Navbar({ activeTab, onNavigate }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-black bg-white">
       <nav
         aria-label="Main navigation"
         className="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-4"
       >
-        <div className="text-[2rem] font-bold tracking-[-0.06em] text-black leading-none">
+        <button
+          type="button"
+          onClick={() => onNavigate("home")}
+          className="border-0 bg-transparent p-0 text-left text-[2rem] font-bold tracking-[-0.06em] text-black leading-none"
+        >
           ShopEase
-        </div>
+        </button>
 
         <div className="ml-auto mr-8 flex items-center gap-10">
-          {navItems.map((item) => (
-            <a
-              key={item}
-              href="#"
-              className="text-base font-medium text-black no-underline"
-            >
-              {item}
-            </a>
-          ))}
+          {navItems.map((item) => {
+            const isActive = activeTab === item.value;
+
+            return (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => onNavigate(item.value)}
+                className={`border-0 bg-transparent p-0 text-base font-medium ${
+                  isActive ? "text-[#6d60d8]" : "text-black"
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
         </div>
 
         <div

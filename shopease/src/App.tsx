@@ -1,4 +1,12 @@
+import { useState } from "react";
 import Navbar from "./components/Navbar";
+import Products from "./pages/Products";
+
+const featureList = [
+  { title: "Free Shipping", subtitle: "On all orders over $50", icon: "truck" },
+  { title: "Money Guarantee", subtitle: "30 day money back", icon: "shield" },
+  { title: "Online Support", subtitle: "24/7 support", icon: "headset" },
+];
 
 const products = [
   { id: 1, name: "Minimal Chair", price: 49.99, type: "chair" },
@@ -7,17 +15,9 @@ const products = [
   { id: 4, name: "Plant Pot", price: 19.99, type: "plant" },
 ];
 
-const featureList = [
-  { title: "Free Shipping", subtitle: "On all orders over $50", icon: "truck" },
-  { title: "Money Guarantee", subtitle: "30 day money back", icon: "shield" },
-  { title: "Online Support", subtitle: "24/7 support", icon: "headset" },
-];
-
-function App() {
+function HomePage() {
   return (
     <div className="min-h-screen bg-[#efeeeb] text-slate-900">
-      <Navbar />
-
       <main className="mx-auto max-w-[1200px] px-4 pb-10 pt-5">
         <section className="grid items-center gap-8 md:grid-cols-[1.02fr_1.08fr]">
           <div className="flex flex-col justify-center px-2 py-5">
@@ -70,12 +70,12 @@ function App() {
             <h2 className="text-[2.2rem] font-semibold tracking-[-0.06em] text-[#4d4a5e]">
               Featured Products
             </h2>
-            <a
-              href="#"
-              className="text-lg font-medium text-[#6d60d8] no-underline"
+            <button
+              type="button"
+              className="border-0 bg-transparent p-0 text-lg font-medium text-[#6d60d8]"
             >
               View All
-            </a>
+            </button>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -129,15 +129,11 @@ function App() {
                 </div>
 
                 <div className="px-4 pb-4 pt-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <div className="text-xl font-medium text-[#49475d]">
-                        {product.name}
-                      </div>
-                      <div className="mt-1 text-[1.05rem] font-semibold text-[#4d4a5e]">
-                        ${product.price.toFixed(2)}
-                      </div>
-                    </div>
+                  <div className="text-xl font-medium text-[#49475d]">
+                    {product.name}
+                  </div>
+                  <div className="mt-1 text-[1.05rem] font-semibold text-[#4d4a5e]">
+                    ${product.price.toFixed(2)}
                   </div>
                 </div>
               </article>
@@ -208,6 +204,27 @@ function App() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function App() {
+  const [activeTab, setActiveTab] = useState<"home" | "products" | "about">(
+    "home",
+  );
+
+  return (
+    <>
+      <Navbar activeTab={activeTab} onNavigate={setActiveTab} />
+      {activeTab === "home" && <HomePage />}
+      {activeTab === "products" && (
+        <Products activeTab={activeTab} onNavigate={setActiveTab} />
+      )}
+      {activeTab === "about" && (
+        <div className="flex min-h-[60vh] items-center justify-center bg-[#efeeeb] text-xl font-medium text-[#4d4a5e]">
+          About page coming soon
+        </div>
+      )}
+    </>
   );
 }
 
