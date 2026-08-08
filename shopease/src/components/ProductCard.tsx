@@ -6,9 +6,29 @@ export type Product = {
   imageType: "chair" | "table" | "lamp" | "plant" | "shelf" | "comfort";
 };
 
-function ProductCard({ product }: { product: Product }) {
+type ProductCardProps = {
+  product: Product;
+  onSelect?: (product: Product) => void;
+};
+
+function ProductCard({ product, onSelect }: ProductCardProps) {
+  const handleClick = () => {
+    onSelect?.(product);
+  };
+
   return (
-    <article className="overflow-hidden rounded-xl bg-[#f5f3f1] shadow-[0_1px_0_rgba(0,0,0,0.02)]">
+    <article
+      role="button"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handleClick();
+        }
+      }}
+      className="cursor-pointer overflow-hidden rounded-xl bg-[#f5f3f1] shadow-[0_1px_0_rgba(0,0,0,0.02)] transition hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#6d60d8]"
+    >
       <div className="relative h-[200px] bg-[#efefee]">
         <div className="absolute inset-0 flex items-center justify-center">
           {product.imageType === "chair" && (

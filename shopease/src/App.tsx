@@ -1,5 +1,7 @@
 import { useState } from "react";
+import type { Product } from "./components/ProductCard";
 import Navbar from "./components/Navbar";
+import ProductDetails from "./pages/ProductDetails";
 import Products from "./pages/Products";
 
 const featureList = [
@@ -211,15 +213,36 @@ function App() {
   const [activeTab, setActiveTab] = useState<"home" | "products" | "about">(
     "home",
   );
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const handleNavigate = (tab: "home" | "products" | "about") => {
+    setActiveTab(tab);
+    if (tab !== "products") {
+      setSelectedProduct(null);
+    }
+  };
+
+  const handleProductSelect = (product: Product) => {
+    setSelectedProduct(product);
+    setActiveTab("products");
+  };
 
   return (
     <>
-      <Navbar activeTab={activeTab} onNavigate={setActiveTab} />
-      {activeTab === "home" && <HomePage />}
-      {activeTab === "products" && (
-        <Products activeTab={activeTab} onNavigate={setActiveTab} />
-      )}
-      {activeTab === "about" && (
+      <Navbar
+        activeTab={selectedProduct ? "products" : activeTab}
+        onNavigate={handleNavigate}
+      />
+      {selectedProduct ? (
+        <ProductDetails
+          product={selectedProduct}
+          onBack={() => setSelectedProduct(null)}
+        />
+      ) : activeTab === "home" ? (
+        <HomePage />
+      ) : activeTab === "products" ? (
+        <Products onSelectProduct={handleProductSelect} />
+      ) : (
         <div className="flex min-h-[60vh] items-center justify-center bg-[#efeeeb] text-xl font-medium text-[#4d4a5e]">
           About page coming soon
         </div>

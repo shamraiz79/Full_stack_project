@@ -1,6 +1,9 @@
 import { useMemo, useState } from "react";
-import Navbar from "../components/Navbar";
 import ProductCard, { type Product } from "../components/ProductCard";
+
+type ProductsPageProps = {
+  onSelectProduct: (product: Product) => void;
+};
 
 const products: Product[] = [
   {
@@ -56,13 +59,7 @@ const priceOptions = [
   { label: "$100+", min: 100, max: Number.POSITIVE_INFINITY },
 ] as const;
 
-function ProductsPage({
-  activeTab,
-  onNavigate,
-}: {
-  activeTab: "home" | "products" | "about";
-  onNavigate: (tab: "home" | "products" | "about") => void;
-}) {
+function ProductsPage({ onSelectProduct }: ProductsPageProps) {
   const [selectedCategory, setSelectedCategory] =
     useState<(typeof categoryOptions)[number]>("All");
   const [selectedPrice, setSelectedPrice] =
@@ -99,8 +96,6 @@ function ProductsPage({
 
   return (
     <div className="min-h-screen bg-[#efeeeb] text-slate-900">
-      <Navbar activeTab={activeTab} onNavigate={onNavigate} />
-
       <main className="mx-auto max-w-[1200px] px-4 pb-10 pt-5">
         <div className="mb-6 flex items-center justify-between border-b border-[#d7d4d1] pb-3">
           <div className="text-[1.9rem] font-semibold text-[#49475d]">
@@ -171,7 +166,11 @@ function ProductsPage({
           <div>
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {visibleProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onSelect={onSelectProduct}
+                />
               ))}
             </div>
 
