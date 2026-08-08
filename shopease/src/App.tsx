@@ -1,6 +1,7 @@
 import { useState } from "react";
-import type { Product } from "./components/ProductCard";
 import Navbar from "./components/Navbar";
+import type { Product } from "./components/ProductCard";
+import Cart, { type CartItem } from "./pages/Cart";
 import ProductDetails from "./pages/ProductDetails";
 import Products from "./pages/Products";
 
@@ -210,14 +211,43 @@ function HomePage() {
 }
 
 function App() {
-  const [activeTab, setActiveTab] = useState<"home" | "products" | "about">(
-    "home",
-  );
+  const [activeTab, setActiveTab] = useState<
+    "home" | "products" | "about" | "cart"
+  >("home");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [cartItems, setCartItems] = useState<CartItem[]>([
+    {
+      id: 1,
+      name: "Minimal Chair",
+      price: 49.99,
+      category: "Chairs",
+      imageType: "chair",
+      quantity: 1,
+    },
+    {
+      id: 3,
+      name: "Desk Lamp",
+      price: 24.99,
+      category: "Lamps",
+      imageType: "lamp",
+      quantity: 2,
+    },
+    {
+      id: 4,
+      name: "Plant Pot",
+      price: 19.99,
+      category: "Decor",
+      imageType: "plant",
+      quantity: 1,
+    },
+  ]);
 
-  const handleNavigate = (tab: "home" | "products" | "about") => {
+  const handleNavigate = (tab: "home" | "products" | "about" | "cart") => {
     setActiveTab(tab);
-    if (tab !== "products") {
+    if (tab !== "products" && tab !== "cart") {
+      setSelectedProduct(null);
+    }
+    if (tab === "cart") {
       setSelectedProduct(null);
     }
   };
@@ -227,16 +257,61 @@ function App() {
     setActiveTab("products");
   };
 
+  const handleAddToCart = (product: Product) => {
+    setCartItems((current) => {
+      const itemExists = current.find((item) => item.id === product.id);
+
+      if (itemExists) {
+        return current.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        );
+      }
+
+      return [
+        ...current,
+        {
+          ...product,
+          quantity: 1,
+        },
+      ];
+    });
+
+    setSelectedProduct(null);
+    setActiveTab("cart");
+  };
+
+  const handleQuantityChange = (productId: number, delta: number) => {
+    setCartItems((current) =>
+      current
+        .map((item) =>
+          item.id === productId
+            ? { ...item, quantity: Math.max(0, item.quantity + delta) }
+            : item,
+        )
+        .filter((item) => item.quantity > 0),
+    );
+  };
+
+  const handleRemoveItem = (productId: number) => {
+    setCartItems((current) => current.filter((item) => item.id !== productId));
+  };
+
   return (
     <>
-      <Navbar
-        activeTab={selectedProduct ? "products" : activeTab}
-        onNavigate={handleNavigate}
-      />
-      {selectedProduct ? (
+      <Navbar activeTab={activeTab} onNavigate={handleNavigate} />
+      {activeTab === "cart" ? (
+        <Cart
+          items={cartItems}
+          onQuantityChange={handleQuantityChange}
+          onRemove={handleRemoveItem}
+        />
+      ) : selectedProduct ? (
         <ProductDetails
           product={selectedProduct}
           onBack={() => setSelectedProduct(null)}
+          onAddToCart={handleAddToCart}
         />
       ) : activeTab === "home" ? (
         <HomePage />

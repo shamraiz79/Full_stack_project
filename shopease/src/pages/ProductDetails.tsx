@@ -3,6 +3,7 @@ import type { Product } from "../components/ProductCard";
 type ProductDetailsProps = {
   product?: Product;
   onBack?: () => void;
+  onAddToCart?: (product: Product) => void;
 };
 
 const fallbackProduct: Product = {
@@ -16,6 +17,7 @@ const fallbackProduct: Product = {
 function ProductDetails({
   product = fallbackProduct,
   onBack,
+  onAddToCart,
 }: ProductDetailsProps) {
   const description =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
@@ -94,6 +96,7 @@ function ProductDetails({
 
           <button
             type="button"
+            onClick={() => onAddToCart?.(product)}
             className="mt-8 inline-flex w-full items-center justify-center rounded-lg bg-[#6d60d8] px-6 py-4 text-base font-semibold text-white shadow-sm transition hover:bg-[#5d50d0]"
           >
             Add to Cart

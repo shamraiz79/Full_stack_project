@@ -1,6 +1,6 @@
 type NavbarProps = {
-  activeTab: "home" | "products" | "about";
-  onNavigate: (tab: "home" | "products" | "about") => void;
+  activeTab: "home" | "products" | "about" | "cart";
+  onNavigate: (tab: "home" | "products" | "about" | "cart") => void;
 };
 
 const navItems: Array<{ label: string; value: "home" | "products" | "about" }> =
@@ -65,6 +65,7 @@ function Navbar({ activeTab, onNavigate }: NavbarProps) {
 
           <button
             type="button"
+            onClick={() => onNavigate("cart")}
             className="flex h-8 w-8 items-center justify-center text-black"
             aria-label="Cart"
           >
