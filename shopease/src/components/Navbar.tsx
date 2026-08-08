@@ -2,7 +2,7 @@ const navItems = ["Home", "Products", "About"];
 
 function Navbar() {
   return (
-    <header className="w-full border-b border-black bg-white">
+    <header className="sticky top-0 z-50 w-full border-b border-black bg-white">
       <nav
         aria-label="Main navigation"
         className="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-4"
