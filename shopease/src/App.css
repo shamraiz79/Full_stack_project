@@ -1,0 +1,94 @@
+.app-shell {
+  width: 100%;
+  min-height: 100vh;
+  background: #f3f1ef;
+}
+
+.navbar-shell {
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #111111;
+}
+
+.navbar {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  box-sizing: border-box;
+}
+
+.navbar__brand {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  color: #111111;
+  line-height: 1;
+}
+
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 2.6rem;
+  margin-left: auto;
+  margin-right: 2rem;
+}
+
+.nav-link {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #111111;
+  text-decoration: none;
+}
+
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon-button {
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: transparent;
+  color: #111111;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.icon-button svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    padding: 0 12px;
+    min-height: 56px;
+  }
+
+  .navbar__brand {
+    font-size: 1.5rem;
+  }
+
+  .navbar__links {
+    gap: 1rem;
+    margin-right: 0.75rem;
+  }
+
+  .nav-link {
+    font-size: 0.9rem;
+  }
+}
