@@ -216,7 +216,7 @@ function HomePage() {
 function App() {
   const [activeTab, setActiveTab] = useState<
     "home" | "products" | "about" | "cart" | "orders"
-  >("home");
+  >("orders");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [authView, setAuthView] = useState<"login" | "register" | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([
