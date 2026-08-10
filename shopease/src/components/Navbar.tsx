@@ -1,6 +1,6 @@
 type NavbarProps = {
-  activeTab: "home" | "products" | "about" | "cart";
-  onNavigate: (tab: "home" | "products" | "about" | "cart") => void;
+  activeTab: "home" | "products" | "about" | "cart" | "orders";
+  onNavigate: (tab: "home" | "products" | "about" | "cart" | "orders") => void;
   onOpenLogin?: () => void;
 };
 

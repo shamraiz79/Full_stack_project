@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import type { Product } from "./components/ProductCard";
 import Cart, { type CartItem } from "./pages/Cart";
 import LoginPage from "./pages/Login";
+import OrdersPage from "./pages/Orders";
 import ProductDetails from "./pages/ProductDetails";
 import Products from "./pages/Products";
 import RegisterPage from "./pages/Register";
@@ -214,7 +215,7 @@ function HomePage() {
 
 function App() {
   const [activeTab, setActiveTab] = useState<
-    "home" | "products" | "about" | "cart"
+    "home" | "products" | "about" | "cart" | "orders"
   >("home");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [authView, setAuthView] = useState<"login" | "register" | null>(null);
@@ -245,13 +246,15 @@ function App() {
     },
   ]);
 
-  const handleNavigate = (tab: "home" | "products" | "about" | "cart") => {
+  const handleNavigate = (
+    tab: "home" | "products" | "about" | "cart" | "orders",
+  ) => {
     setActiveTab(tab);
     setAuthView(null);
     if (tab !== "products" && tab !== "cart") {
       setSelectedProduct(null);
     }
-    if (tab === "cart") {
+    if (tab === "cart" || tab === "orders") {
       setSelectedProduct(null);
     }
   };
@@ -321,6 +324,10 @@ function App() {
           onRemove={handleRemoveItem}
         />
       );
+    }
+
+    if (activeTab === "orders") {
+      return <OrdersPage />;
     }
 
     if (selectedProduct) {
