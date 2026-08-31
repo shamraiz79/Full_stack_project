@@ -8,6 +8,7 @@ import OrdersPage from "./pages/Orders";
 import ProductDetails from "./pages/ProductDetails";
 import Products from "./pages/Products";
 import RegisterPage from "./pages/Register";
+import type { AuthUser } from "./services/authService";
 
 const featureList = [
   { title: "Free Shipping", subtitle: "On all orders over $50", icon: "truck" },
@@ -217,7 +218,15 @@ function HomePage() {
 function App() {
   const [activeTab, setActiveTab] = useState<
     "home" | "products" | "about" | "cart" | "orders"
-  >("orders");
+  >("home");
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => {
+    try {
+      const saved = localStorage.getItem("shopease_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [authView, setAuthView] = useState<"login" | "register" | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -246,6 +255,29 @@ function App() {
       quantity: 1,
     },
   ]);
+
+  const handleAuthSuccess = (user: AuthUser, token?: string) => {
+    setCurrentUser(user);
+    try {
+      localStorage.setItem("shopease_user", JSON.stringify(user));
+      if (token) {
+        localStorage.setItem("shopease_token", token);
+      }
+    } catch (err) {
+      console.error("Failed to save auth to localStorage", err);
+    }
+    setAuthView(null);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    try {
+      localStorage.removeItem("shopease_user");
+      localStorage.removeItem("shopease_token");
+    } catch (err) {
+      console.error("Failed to clear auth from localStorage", err);
+    }
+  };
 
   const handleNavigate = (
     tab: "home" | "products" | "about" | "cart" | "orders",
@@ -310,11 +342,21 @@ function App() {
 
   const renderMainContent = () => {
     if (authView === "login") {
-      return <LoginPage onSwitchToRegister={() => setAuthView("register")} />;
+      return (
+        <LoginPage
+          onSwitchToRegister={() => setAuthView("register")}
+          onLoginSuccess={handleAuthSuccess}
+        />
+      );
     }
 
     if (authView === "register") {
-      return <RegisterPage onSwitchToLogin={() => setAuthView("login")} />;
+      return (
+        <RegisterPage
+          onSwitchToLogin={() => setAuthView("login")}
+          onRegisterSuccess={handleAuthSuccess}
+        />
+      );
     }
 
     if (activeTab === "cart") {
@@ -364,6 +406,8 @@ function App() {
         activeTab={activeTab}
         onNavigate={handleNavigate}
         onOpenLogin={() => setAuthView("login")}
+        user={currentUser}
+        onLogout={handleLogout}
       />
       {renderMainContent()}
     </>

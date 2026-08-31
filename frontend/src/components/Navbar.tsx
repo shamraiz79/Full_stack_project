@@ -1,7 +1,11 @@
+import type { AuthUser } from "../services/authService";
+
 type NavbarProps = {
   activeTab: "home" | "products" | "about" | "cart" | "orders";
   onNavigate: (tab: "home" | "products" | "about" | "cart" | "orders") => void;
   onOpenLogin?: () => void;
+  user?: AuthUser | null;
+  onLogout?: () => void;
 };
 
 const navItems: Array<{ label: string; value: "home" | "products" | "about" }> =
@@ -11,7 +15,13 @@ const navItems: Array<{ label: string; value: "home" | "products" | "about" }> =
     { label: "About", value: "about" },
   ];
 
-function Navbar({ activeTab, onNavigate, onOpenLogin }: NavbarProps) {
+function Navbar({
+  activeTab,
+  onNavigate,
+  onOpenLogin,
+  user,
+  onLogout,
+}: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-black bg-white">
       <nav
@@ -46,7 +56,7 @@ function Navbar({ activeTab, onNavigate, onOpenLogin }: NavbarProps) {
         </div>
 
         <div
-          className="flex items-center gap-2"
+          className="flex items-center gap-3"
           aria-label="Search and cart actions"
         >
           <button
@@ -81,13 +91,28 @@ function Navbar({ activeTab, onNavigate, onOpenLogin }: NavbarProps) {
             </svg>
           </button>
 
-          <button
-            type="button"
-            onClick={onOpenLogin}
-            className="rounded-md border border-[#d7d4d1] bg-[#f7f6f4] px-3 py-1.5 text-sm font-medium text-[#4d4a5e] transition hover:border-[#6d60d8] hover:text-[#6d60d8]"
-          >
-            Login
-          </button>
+          {user ? (
+            <div className="flex items-center gap-2">
+              <span className="hidden text-sm font-medium text-[#4d4a5e] sm:inline-block">
+                Hi, {user.name}
+              </span>
+              <button
+                type="button"
+                onClick={onLogout}
+                className="rounded-md border border-[#d7d4d1] bg-[#f7f6f4] px-3 py-1.5 text-sm font-medium text-[#4d4a5e] transition hover:border-[#d45d4d] hover:text-[#d45d4d]"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={onOpenLogin}
+              className="rounded-md border border-[#d7d4d1] bg-[#f7f6f4] px-3 py-1.5 text-sm font-medium text-[#4d4a5e] transition hover:border-[#6d60d8] hover:text-[#6d60d8]"
+            >
+              Login
+            </button>
+          )}
         </div>
       </nav>
     </header>
