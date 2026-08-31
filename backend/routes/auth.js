@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
@@ -6,6 +7,18 @@ const User = require("../models/User");
 const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || "shopease_jwt_secret_key_2026";
+
+// Middleware to check database connection status
+const checkDbConnection = (req, res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      success: false,
+      message:
+        "Database is not connected. Please start MongoDB or provide a valid MongoDB Atlas URI in backend/.env",
+    });
+  }
+  next();
+};
 
 // Helper function to generate JWT
 const generateToken = (user) => {
@@ -19,7 +32,7 @@ const generateToken = (user) => {
 // @route   POST /api/auth/register
 // @desc    Register a new user in the database
 // @access  Public
-router.post("/register", async (req, res) => {
+router.post("/register", checkDbConnection, async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -86,7 +99,7 @@ router.post("/register", async (req, res) => {
 // @route   POST /api/auth/login
 // @desc    Authenticate user & get token
 // @access  Public
-router.post("/login", async (req, res) => {
+router.post("/login", checkDbConnection, async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -144,7 +157,7 @@ router.post("/login", async (req, res) => {
 // @route   GET /api/auth/me
 // @desc    Get logged-in user profile
 // @access  Private
-router.get("/me", async (req, res) => {
+router.get("/me", checkDbConnection, async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -183,4 +196,3 @@ router.get("/me", async (req, res) => {
 });
 
 module.exports = router;
-
