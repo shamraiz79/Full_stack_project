@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import type { Product } from "./components/ProductCard";
+import AboutPage from "./pages/About";
 import Cart, { type CartItem } from "./pages/Cart";
 import LoginPage from "./pages/Login";
 import OrdersPage from "./pages/Orders";
@@ -348,11 +349,13 @@ function App() {
       return <Products onSelectProduct={handleProductSelect} />;
     }
 
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center bg-[#efeeeb] text-xl font-medium text-[#4d4a5e]">
-        About page coming soon
-      </div>
-    );
+    if (activeTab === "about") {
+      return (
+        <AboutPage onExploreProducts={() => handleNavigate("products")} />
+      );
+    }
+
+    return null;
   };
 
   return (
